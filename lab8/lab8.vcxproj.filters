@@ -27,6 +27,24 @@
     <ClCompile Include="Shopping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Service.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidareDate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Comanda.h">
@@ -38,11 +56,43 @@
     <ClInclude Include="Shopping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Repo.h">
+    <ClInclude Include="RepoCSV.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RepoFile.h">
+    <ClInclude Include="RepoBaza.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RepoCostum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Service.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidareDate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="mancare.txt" />
+    <Text Include="shopping.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mancare.csv" />
+    <None Include="shopping.csv" />
   </ItemGroup>
 </Project>

@@ -7,108 +7,116 @@ using namespace std;
 
 //constructor default(fara param)
 Comanda::Comanda() {
-	this->name = NULL;
-	this->adresa = NULL;
-	this->pret = NULL;
+	this->numeClient = "";
+	this->adresaClient = "";
+	this->pretTotal = 0;
 }
 
 //constructor cu param
-Comanda::Comanda(const char* name, const char* adresa, float pret)
+Comanda::Comanda(string numeClient, string adresaClient, int pretTotal)
 {
-	this->name = new char[strlen(name) + 1];
-	strcpy_s(this->name, 1 + strlen(name), name);
-	this->adresa = new char[strlen(adresa) + 1];
-	strcpy_s(this->adresa, 1 + strlen(adresa), adresa);
-	this->pret = pret;
+	/*this->numeClient = new char[strlen(numeClient) + 1];
+	strcpy_s(this->numeClient, 1 + strlen(numeClient), numeClient);
+	this->adresaClient = new char[strlen(adresaClient) + 1];
+	strcpy_s(this->adresaClient, 1 + strlen(adresaClient), adresaClient);*/
+	this->numeClient = numeClient;
+	this->adresaClient = adresaClient;
+	this->pretTotal = pretTotal;
 }
 
 //constructor de copiere
-Comanda::Comanda(const Comanda& a) {
-	if (a.name) {
-		this->name = new char[strlen(a.name) + 1];
-		strcpy_s(this->name, 1 + strlen(a.name), a.name);
+Comanda::Comanda(const Comanda& c) {
+	/*if (c.numeClient) {
+		this->numeClient = new char[strlen(c.numeClient) + 1];
+		strcpy_s(this->numeClient, 1 + strlen(c.numeClient), c.numeClient);
 	}
-	if (a.adresa) {
-		this->adresa = new char[strlen(a.adresa) + 1];
-		strcpy_s(this->adresa, 1 + strlen(a.adresa), a.adresa);
-	}
-	this->pret = a.pret;
+	if (c.adresaClient) {
+		this->adresaClient = new char[strlen(c.adresaClient) + 1];
+		strcpy_s(this->adresaClient, 1 + strlen(c.adresaClient), c.adresaClient);
+	}*/
+	this->numeClient = c.numeClient;
+	this->adresaClient = c.adresaClient;
+	this->pretTotal = c.pretTotal;
 }
 
 //destructor
 Comanda::~Comanda() {
-	if (name) delete[]name;
-	name = NULL;
-	adresa = NULL;
-	pret = -1;
+	/*if (numeClient) delete[]numeClient;
+	numeClient = NULL;
+	if (adresaClient) delete[]adresaClient;
+	adresaClient = NULL;*/
 }
 
 //getter pentru nume
-char* Comanda::getName() {
-	return this->name;
+string Comanda::getNumeClient() {
+	return this->numeClient;
 }
 
-//getter pentru adresa
-char* Comanda::getAdresa() {
-	return this->adresa;
+//getter pentru adresaClient
+string Comanda::getAdresaClient() {
+	return this->adresaClient;
 }
 
-//getter pentru statusul nou
-float Comanda::getPret() {
-	return this->pret;
+//getter pentru pret
+int Comanda::getPretTotal() {
+	return this->pretTotal;
 }
 
 //setter pentru nume
-void Comanda::setName(const char* name)
+void Comanda::setNumeClient(string numeClient)
 {
-	if (this->name) {
-		delete[] this->name;
+	/*if (this->numeClient) {
+		delete[] this->numeClient;
 	}
-	this->name = new char[strlen(name) + 1];
-	strcpy_s(this->name, strlen(name) + 1, name);
+	this->numeClient = new char[strlen(numeClient) + 1];
+	strcpy_s(this->numeClient, strlen(numeClient) + 1, numeClient);*/
+	this->numeClient = numeClient;
 }
 
-//setter pentru adresa
-void Comanda::setAdresa(const char* adresa)
+//setter pentru adresaClient
+void Comanda::setAdresaClient(string ac)
 {
-	if (this->adresa) {
-		delete[] this->adresa;
+	/*if (this->adresaClient) {
+		delete[] this->adresaClient;
 	}
-	this->adresa = new char[strlen(adresa) + 1];
-	strcpy_s(this->adresa, strlen(adresa) + 1, adresa);
+	this->adresaClient = new char[strlen(adresaClient) + 1];
+	strcpy_s(this->adresaClient, strlen(adresaClient) + 1, adresaClient);*/
+	this->adresaClient = ac;
 }
 
-//setter pentru statusul nou
-void Comanda::setPret(float pret)
+//setter pentru pret
+void Comanda::setPretTotal(int pretTotal)
 {
-	this->pret = pret;
+	this->pretTotal = pretTotal;
 }
 
-//suprascrie operatorul "=" pentru un element de tip Comanda
-Comanda& Comanda::operator=(const Comanda& a) {
-	if (this == &a) return *this; //self-assignment
-	if (name) delete[] name;
-	if (a.name) {
-		this->name = new char[strlen(a.name) + 1];
-		strcpy_s(name, strlen(a.name) + 1, a.name);
-	}
-	pret = a.pret;
-	if (adresa) delete[] adresa;
-	if (a.adresa) {
-		this->adresa = new char[strlen(a.adresa) + 1];
-		strcpy_s(adresa, strlen(a.adresa) + 1, a.adresa);
-	}
-	return *this;
-}
-
-//operatorul de egalitate
-bool Comanda:: operator==(const Comanda& a) {
-	return strcmp(this->name, a.name) == 0  && strcmp(this->adresa, a.adresa) == 0 && this->pret == a.pret;
-}
-
-//pt afisare
-ostream& operator<<(ostream& os, const Comanda& a)
-{
-	os << "Nume - " << a.name << ", adresa - " << a.adresa << ", pret - " << a.pret;
-	return os;
-}
+////suprascrie operatorul "=" pentru un element de tip Comanda
+//Comanda& Comanda::operator=(const Comanda& c) {
+//	if (this == &c) return *this; //self-assignment
+//	/*if (numeClient) delete[] numeClient;
+//	if (c.numeClient) {
+//		this->numeClient = new char[strlen(c.numeClient) + 1];
+//		strcpy_s(numeClient, strlen(c.numeClient) + 1, c.numeClient);
+//	}
+//	if (adresaClient) delete[] adresaClient;
+//	if (c.adresaClient) {
+//		this->adresaClient = new char[strlen(c.adresaClient) + 1];
+//		strcpy_s(adresaClient, strlen(c.adresaClient) + 1, c.adresaClient);
+//	}*/
+//	numeClient = c.numeClient;
+//	adresaClient = c.adresaClient;
+//	pretTotal = c.pretTotal;
+//	return *this;
+//}
+//
+////operatorul de egalitate
+//bool Comanda:: operator==(const Comanda& c) {
+//	return this->numeClient == c.numeClient && this->adresaClient == c.adresaClient && this->pretTotal == c.pretTotal;
+//}
+//
+////pt afisare
+//ostream& operator<<(ostream& os, const Comanda& c)
+//{
+//	os << "Nume - " << c.numeClient << ", adresaClient - " << c.adresaClient << ", pretTotal - " << c.pretTotal;
+//	return os;
+//}
