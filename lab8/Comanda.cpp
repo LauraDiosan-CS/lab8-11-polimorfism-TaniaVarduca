@@ -114,9 +114,9 @@ void Comanda::setPretTotal(int pretTotal)
 //	return this->numeClient == c.numeClient && this->adresaClient == c.adresaClient && this->pretTotal == c.pretTotal;
 //}
 //
-////pt afisare
+//pt afisare
 //ostream& operator<<(ostream& os, const Comanda& c)
 //{
-//	os << "Nume - " << c.numeClient << ", adresaClient - " << c.adresaClient << ", pretTotal - " << c.pretTotal;
-//	return os;
+//	/*os << "Nume - " << c.numeClient << ", adresaClient - " << c.adresaClient << ", pretTotal - " << c.pretTotal;
+//	return os;*/
 //}

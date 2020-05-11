@@ -1,6 +1,6 @@
 #pragma once
 #include "RepoCSV.h"
-#include "RepoCostum.h"
+#include "RepoCustom.h"
 #include "Mancare.h"
 #include "Shopping.h"
 #include "User.h"
@@ -8,19 +8,18 @@
 class Service
 {
 private:
-	Repo<Mancare>* repoMancare;
-	Repo<Shopping>* repoShopping;
+	Repo<Comanda*>* repoComanda;
 	Repo<User>* repoUser;
+
 public:
 	Service();
-	Service(Repo<Mancare>*, Repo<Shopping>*, Repo<User>*);
+	Service(Repo<Comanda*>*, Repo<User>*);
 	bool login(string, string);
 	void logout(string, string);
-	map<int, Mancare> getAllMancare();
-	map<int, Shopping> getAllShopping();
-	void addMancare(Mancare&);
-	void addShopping(Shopping&);
-	map<int, Mancare> mancareDupaNumeClient(string);
-	map<int, Shopping> shoppingDupaNumeClient(string);
+	map<int, Comanda*> getAllComenzi();
+	void addComanda(Comanda*);
+	map<int, Comanda*> comandaDupaNumeClient(string);
+	void validareMancare(Mancare);
+	void validareShopping(Shopping);
 	~Service();
 };

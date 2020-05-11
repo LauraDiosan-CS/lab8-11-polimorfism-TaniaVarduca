@@ -2,13 +2,17 @@
 #include "Comanda.h"
 #include "Mancare.h"
 #include "Shopping.h"
+#include "ValidatorMancare.h"
+#include "ValidatorShopping.h"
+#include "Exceptie.h"
+#include "User.h"
 #include "RepoCSV.h"
-#include "RepoCostum.h"
-#include "ValidareDate.h"
+#include "RepoCustom.h"
+#include "Service.h"
 #include <assert.h>
 #include <iostream>
 
-//teste entitati
+
 void testeEntitati() {
 
 	//mancare
@@ -35,139 +39,166 @@ void testeEntitati() {
 	assert((s1.getNumeClient().compare("nume1") == 0) && (s1.getAdresaClient().compare("stradaN") == 0) && s1.getPretTotal() == 400 && (s1.getListaCumparaturi().compare("xyz") == 0) && (s1.getNumeMagazin().compare("maga1") == 0));
 }
 
-void repoCSVtests() {
+void testeRepoCSV() {
 
-	//mancare
-	RepoCSV<Mancare>* repoMancare = new RepoCSV<Mancare>("mancare.csv");
-	((RepoCSV<Mancare>*)repoMancare)->loadFromFile();
-	assert(repoMancare->size() == 2);
-	Mancare m1("mancare1", "str.X,nr.1", "pui,cartofi", 50);
-	repoMancare->add(m1);
-	((RepoCSV<Mancare>*)repoMancare)->saveToFile();
-	assert(repoMancare->size() == 3);
-	Mancare m2("mancare2", "str.X,nr.2", "pui,salata", 30);
-	//repoMancare->update(m1, m2);
-	assert(repoMancare->getAll().at(2) == m1);
-	assert(repoMancare->find(m1) == 2);
-	repoMancare->del(2);
-	assert(repoMancare->size() == 2);
-	assert(repoMancare->find(m1) == -1);
-	((RepoCSV<Mancare>*)repoMancare)->saveToFile();
+	Repo<Comanda*>* repo = new Repo<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	repo = new RepoCSV<Comanda*>("comenzi.csv", s);
+	repo->loadFromFile(); //load from  csv file
+	assert(repo->size() == 4); //repo csv size
+	Mancare m1 ("mancare1", "str.X,nr.1", "pui,cartofi", 50);
 
-	//shopping
-	RepoCSV<Shopping>* repoShopping = new RepoCSV<Shopping>("shopping.csv");
-	((RepoCSV<Shopping>*)repoShopping)->loadFromFile();
-	assert(repoShopping->size() == 2);
+	repo->add(&m1); //add mancare
+	((Repo<Mancare>*)repo)->saveToFile(); //save mancare to csv file
+	assert(repo->size() == 5);
+	assert(repo->getAll().at(4) == &m1); //get all from repo
+	assert(repo->find(&m1) == 4); //find mancare
 	Shopping s1("shopping1", "str.X,nr.1", "haine,pantofi", 500, "h&m");
-	repoShopping->add(s1);
-	((RepoCSV<Shopping>*)repoShopping)->saveToFile();
-	assert(repoShopping->size() == 3);
-	Shopping s2("shopping2", "str.X,nr.2", "curea,jucarie", 300, "zara");
-	//repoMancare->update(m1, m2);
-	assert(repoShopping->getAll().at(2) == s1);
-	assert(repoShopping->find(s1) == 2);
-	repoShopping->del(2);
-	assert(repoShopping->size() == 2);
-	assert(repoShopping->find(s1) == -1);
-	((RepoCSV<Shopping>*)repoShopping)->saveToFile();
+	repo->add(&s1); // add shopping
+	((Repo<Shopping>*)repo)->saveToFile(); //save shopping to csv file
+	assert(repo->size() == 6);
+	assert(repo->getAll().at(5) == &s1);
+	assert(repo->find(&s1) == 5); //find shopping
+	Shopping s2("shopping2", "str.X,nr.2", "haine", 300, "zara");
+
+	repo->update(&s1, &s2); //update shopping
+	((RepoCSV<Shopping>*)repo)->saveToFile();
+	assert(repo->find(&s1) == -1);
+	assert(repo->find(&s2) == 5);
+	repo->remove(&s2); //delete shopping
+	assert(repo->size() == 5);
+	assert(repo->find(&s1) == -1);
+	((RepoCSV<Shopping>*)repo)->saveToFile();
+	Mancare m2("mancare2", "str.X,nr.2", "pui,salata", 30);
+
+	repo->update(&m1, &m2); //update mancare
+	((RepoCSV<Mancare>*)repo)->saveToFile();
+	assert(repo->find(&m1) == -1);
+	assert(repo->find(&m2) == 4);
+	repo->remove(&m2); //delete mancare
+	assert(repo->size() == 4);
+	assert(repo->find(&m2) == -1);
+	((RepoCSV<Mancare>*)repo)->saveToFile();	
 }
 
-void repoCostumTests() {
+void testeRepoCustom() {
 
-	//mancare
-	RepoCostum<Mancare>* repoMancare = new RepoCostum<Mancare>("mancare.txt");
-	((RepoCostum<Mancare>*)repoMancare)->loadFromFile();
-	assert(repoMancare->size() == 2);
+	Repo<Comanda*>* repo = new Repo<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	repo = new RepoCustom<Comanda*>("comenzi.txt", s);
+	repo->loadFromFile(); //load from  csv file
+	assert(repo->size() == 4); //repo csv size
 	Mancare m1("mancare1", "str.X,nr.1", "pui,cartofi", 50);
-	repoMancare->add(m1);
-	((RepoCostum<Mancare>*)repoMancare)->saveToFile();
-	assert(repoMancare->size() == 3);
-	Mancare m2("mancare2", "str.X,nr.2", "pui,salata", 30);
-	//repoMancare->update(m1, m2);
-	assert(repoMancare->getAll().at(2) == m1);
-	assert(repoMancare->find(m1) == 2);
-	repoMancare->del(2);
-	assert(repoMancare->size() == 2);
-	assert(repoMancare->find(m1) == -1);
-	((RepoCostum<Mancare>*)repoMancare)->saveToFile();
-
-	//shopping
-	RepoCostum<Shopping>* repoShopping = new RepoCostum<Shopping>("shopping.txt");
-	((RepoCostum<Shopping>*)repoShopping)->loadFromFile();
-	assert(repoShopping->size() == 2);
+	repo->add(&m1); //add mancare
+	((Repo<Mancare>*)repo)->saveToFile(); //save mancare to csv file
+	assert(repo->size() == 5);
+	assert(repo->getAll().at(4) == &m1); //get all from repo
+	assert(repo->find(&m1) == 4); //find mancare
 	Shopping s1("shopping1", "str.X,nr.1", "haine,pantofi", 500, "h&m");
-	repoShopping->add(s1);
-	((RepoCostum<Shopping>*)repoShopping)->saveToFile();
-	assert(repoShopping->size() == 3);
-	Shopping s2("shopping2", "str.X,nr.2", "curea,jucarie", 300, "zara");
-	//repoMancare->update(m1, m2);
-	assert(repoShopping->getAll().at(2) == s1);
-	assert(repoShopping->find(s1) == 2);
-	repoShopping->del(2);
-	assert(repoShopping->size() == 2);
-	assert(repoShopping->find(s1) == -1);
-	((RepoCostum<Shopping>*)repoShopping)->saveToFile();
+	repo->add(&s1); // add shopping
+	((Repo<Shopping>*)repo)->saveToFile(); //save shopping to csv file
+	assert(repo->size() == 6);
+	assert(repo->getAll().at(5) == &s1);
+	assert(repo->find(&s1) == 5); //find shopping
+	Shopping s2("shopping2", "str.X,nr.2", "haine", 300, "zara");
 
+	repo->update(&s1, &s2); //update shopping
+	((RepoCSV<Shopping>*)repo)->saveToFile();
+	assert(repo->find(&s1) == -1);
+	assert(repo->find(&s2) == 5);
+	repo->remove(&s2); //delete shopping
+	assert(repo->size() == 5);
+	assert(repo->find(&s1) == -1);
+	((RepoCSV<Shopping>*)repo)->saveToFile();
+	Mancare m2("mancare2", "str.X,nr.2", "pui,salata", 30);
+
+	repo->update(&m1, &m2); //update mancare
+	((RepoCSV<Mancare>*)repo)->saveToFile();
+	assert(repo->find(&m1) == -1);
+	assert(repo->find(&m2) == 4);
+	repo->remove(&m2); //delete mancare
+	assert(repo->size() == 4);
+	assert(repo->find(&m1) == -1);
+	((RepoCSV<Mancare>*)repo)->saveToFile();
 }
 
-void testeValidari() {
-	
-	//mancareCSV
-	RepoCSV<Mancare>* repoMancare = new RepoCSV<Mancare>("mancare.csv");
-	((RepoCSV<Mancare>*)repoMancare)->loadFromFile();
-	ValidareDate vd;
+void testeValidariCsv() {
+
+	Repo<Comanda*>* repo = new Repo<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	repo = new RepoCSV<Comanda*>("comenzi.csv", s);
+	repo->loadFromFile(); 
+
+ 	ValidatorMancare vm;
+	Mancare m("nume", "adresa", "", -2); 
+	if (vm.validate(m) == 0) { //validare mancare
+		repo->add(&m);
+	}
+	assert(repo->size() == 4);
+
+	ValidatorShopping vs;
+	Shopping sho("nume", "adresa", "", -2, "maga");
+	if (vs.validate(sho) == 0) { //validare shopping
+		repo->add(&sho);
+	}
+	assert(repo->size() == 4);	
+}
+
+void testeValidariCustom() {
+
+	Repo<Comanda*>* repo = new Repo<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	repo = new RepoCustom<Comanda*>("comenzi.csv", s);
+	repo->loadFromFile();
+
+
+	ValidatorMancare vm;
 	Mancare m("nume", "adresa", "", -2);
-	try {
-		vd.validareMancare(m);
-		repoMancare->add(m);
+	if (vm.validate(m) == 0) { //validare mancare
+		repo->add(&m);
 	}
-	catch(exception& e){}
-	assert(repoMancare->size() == 2);
+	assert(repo->size() == 4);
 
-	//mancareCostum
-	RepoCostum<Mancare>* repoM = new RepoCostum<Mancare>("mancare.txt");
-	((RepoCostum<Mancare>*)repoM)->loadFromFile();
-	ValidareDate vd1;
-	Mancare m1("nume", "adresa", "", -2);
-	try {
-		vd1.validareMancare(m1);
-		repoM->add(m1);
+	ValidatorShopping vs;
+	Shopping sho("nume", "adresa", "", -2, "maga");
+	if (vs.validate(sho) == 0) { //validare shopping
+		repo->add(&sho);
 	}
-	catch (exception & e) {}
-	assert(repoM->size() == 2);
+	assert(repo->size() == 4);
+}
 
-	//shoppingCSV
-	RepoCSV<Shopping>* repoShopping = new RepoCSV<Shopping>("shopping.csv");
-	((RepoCSV<Shopping>*)repoShopping)->loadFromFile();
-	ValidareDate vd2;
-	Shopping s("nume", "adresa", "", -2, "maga");
-	try {
-		vd2.validareShopping(s);
-		repoShopping->add(s);
-	}
-	catch (exception & e) {}
-	assert(repoShopping->size() == 2);
+void testeService() {
 
-	//shoppingCostum
-	RepoCostum<Shopping>* repoS = new RepoCostum<Shopping>("shopping.txt");
-	((RepoCostum<Shopping>*)repoS)->loadFromFile();
-	ValidareDate vd3;
-	Shopping s1("nume", "adresa", "", -2, "maga");
-	try {
-		vd3.validareShopping(s1);
-		repoS->add(s1);
-	}
-	catch (exception & e) {}
-	assert(repoS->size() == 2);
+	Repo<User>* repoU = new Repo<User>;
+	Repo<Comanda*>* repoo = new RepoCSV<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	repoo = new RepoCustom<Comanda*>("comenzi.csv", s);
+	repoo->loadFromFile();
+	Service serv(repoo, repoU);
+
+	//login
+	assert(serv.login("Ana", "123") == 1);
+	assert(serv.login("Ion", "1234") == 1);
+	assert(serv.login("Dana", "000") == 0);
+	User u("Maria", "111");
+	repoU->add(u);
+	assert(repoU->size() == 3);
+
+	//logout
+	serv.logout("Maria", "111");
+	assert(repoU->size() == 2);
+
 }
 
 void tests() {
 	std::cout << "first tests ..." << endl;
 
 	testeEntitati();
-	repoCSVtests();
-	repoCostumTests();
-	testeValidari();
+	testeRepoCSV();
+	testeRepoCustom();
+	testeValidariCsv();
+	testeValidariCustom();
+	testeService();
 
 	std::cout << "all tests are ok ... good job!" << endl << endl;
 }

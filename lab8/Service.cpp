@@ -1,7 +1,8 @@
 #include "Service.h"
 #include "User.h"
-#include "ValidareDate.h"
-//#include "Exc.h"
+#include "ValidatorMancare.h"
+#include "ValidatorShopping.h"
+#include "Exceptie.h"
 #include<iostream>
 using namespace std;
 
@@ -10,10 +11,9 @@ Service::Service()
 {
 }
 
-Service::Service(Repo<Mancare>* repoMancare, Repo<Shopping>* repoShopping, Repo<User>* repoUseri)
+Service::Service(Repo<Comanda*>* repoComanda,  Repo<User>* repoUseri)
 {
-	this->repoMancare = repoMancare;
-	this->repoShopping = repoShopping;
+	this->repoComanda = repoComanda;
 	this->repoUser = repoUseri;
 	User u1("Ana", "123");
 	User u2("Ion", "1234");
@@ -30,73 +30,50 @@ bool Service::login(string u, string p)
 void Service::logout(string name, string pass)
 {
 	User u(name, pass);
-	int pos = repoUser->find(u);
-	repoUser->del(pos);
+	repoUser->remove(u);
 }
 
-map<int, Mancare> Service::getAllMancare()
+map<int, Comanda*> Service::getAllComenzi()
 {
-	return repoMancare->getAll();
+	return repoComanda->getAll();
 }
 
-map<int, Shopping> Service::getAllShopping()
+void Service::addComanda(Comanda* m)
 {
-	return repoShopping->getAll();
+	repoComanda->add(m);
+	((Repo<Comanda*>*)repoComanda)->saveToFile();
 }
 
-void Service::addMancare(Mancare& m)
-{
-	ValidareDate vd;
-	try {
-		vd.validareMancare(m);
-		repoMancare->add(m);
-		((Repo<Mancare>*)repoMancare)->saveToFile();
-	}
-	catch (exception& exc) {
-		cout << "Exceptie: " << exc.what() << endl;
-	}
-}
-
-void Service::addShopping(Shopping& sho)
-{
-	ValidareDate vd;
-	try {
-		vd.validareShopping(sho);
-
-		repoShopping->add(sho);
-		((Repo<Shopping>*)repoShopping)->saveToFile();
-	}
-	catch (exception & exc) {
-		cout << "Exceptie: " << exc.what() << endl;
-	}
-}
-
-map<int, Mancare> Service::mancareDupaNumeClient(string nume)
+map<int, Comanda*> Service::comandaDupaNumeClient(string nume)
 {
 	int contor = 0;
-	map<int, Mancare> rez;
-	map<int, Mancare> cm = repoMancare->getAll();
-	map<int, Mancare>::iterator itr;
+	map<int, Comanda*> rez;
+	map<int, Comanda*> cm = repoComanda->getAll();
+	map<int, Comanda*>::iterator itr;
 	for (itr = cm.begin(); itr != cm.end(); ++itr) {
-		if (itr->second.getNumeClient().compare(nume)==0) {
-			rez.insert(pair<int, Mancare>(contor++, itr->second));
+		if (itr->second->getNumeClient().compare(nume) == 0) {
+			rez.insert(pair<int, Comanda*>(contor++, itr->second));
 		}
 	}
 	return rez;
 }
 
-map<int, Shopping> Service::shoppingDupaNumeClient(string nume)
+void Service::validareMancare(Mancare m)
 {
-	int contor = 0;
-	map<int, Shopping> rez;
-	map<int, Shopping> cm = repoShopping->getAll();
-	map<int, Shopping>::iterator itr;
-	for (itr = cm.begin(); itr != cm.end(); ++itr) {
-		if (itr->second.getNumeClient().compare(nume) == 0) {
-			rez.insert(pair<int, Shopping>(contor++, itr->second));
-		}
+	ValidatorMancare vm;
+	int rez = vm.validate(m);
+	if (rez != 0) {
+		throw ValidationException(vm.toString().c_str());
 	}
-	return rez;
+}
+
+void Service::validareShopping(Shopping sho)
+{
+	ValidatorShopping vs;
+	int rez = vs.validate(sho);
+	if (rez != 0) {
+		throw ValidationException(vs.toString().c_str());
+	}
 }
 
 Service::~Service()

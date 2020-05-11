@@ -1,5 +1,7 @@
 #include "UI.h"
 #include <vector>;
+#include <sstream>
+#include "Exceptie.h"
 #include <iostream>
 using namespace std;
 
@@ -8,13 +10,12 @@ using namespace std;
 void UI::printMenu()
 {
 	cout << endl;
-	cout << "1. Afisare comenzi de tip mancare" << endl;
-	cout << "2. Afisare comenzi de tip shopping" << endl;
-	cout << "3. Cautare dupa nume client" << endl;
-	cout << "4. Adaugare comanda de tip mancare" << endl;
-	cout << "5. Adaugare comanda de tip shopping" << endl;
-	cout << "6. Logout" << endl;
-	cout << "7. Inchidere aplicatie" << endl;
+	cout << "1. Afisare comenzi" << endl;
+	cout << "2. Cautare dupa nume client" << endl;
+	cout << "3. Adaugare comanda de tip mancare" << endl;
+	cout << "4. Adaugare comanda de tip shopping" << endl;
+	cout << "5. Logout" << endl;
+	cout << "6. Inchidere aplicatie" << endl;
 }
 
 int UI::login()
@@ -37,66 +38,62 @@ void UI::logout()
 
 
 
-void UI::allMancare()
+void UI::allComenzi()
 {
-	map<int, Mancare> m = s.getAllMancare();
-	map<int, Mancare>::iterator itr;
-	cout << endl << "Comenzile de tip mancare sunt: " << endl;
+	map<int, Comanda*> m = s.getAllComenzi();
+	map<int, Comanda*>::iterator itr;
+	cout << endl << "Comenzile sunt: " << endl;
 	for (itr = m.begin(); itr != m.end(); ++itr) {
-		cout << "cheia: " << itr->first << ", comanda: " << itr->second;
-		cout << endl;
-	}
-}
-
-void UI::allShopping()
-{
-	map<int, Shopping> sho = s.getAllShopping();
-	map<int, Shopping>::iterator itr;
-	cout << endl << "Comenzile de tip Shopping sunt: " << endl;
-	for (itr = sho.begin(); itr != sho.end(); ++itr) {
-		cout << "cheia: " << itr->first << ", comanda: " << itr->second;
-		cout << endl;
+		cout << "cheia: " << itr->first << ", comanda: " << (*itr->second).toStringDelimiter('-') << endl;
 	}
 }
 
 void UI::addMancare()
 {
-	string nume, adresa, preparate; int pret;
-	cout << "Nume client: "; cin >> nume;
-	cout << "Adresa client: "; cin >> adresa;
-	cout << "Lista preparate: "; cin >> preparate; if (preparate == "-") preparate = "";
-	cout << "Pret total: "; cin >> pret;
-	Mancare m(nume, adresa, preparate, pret);
-	s.addMancare(m);
+	try {
+		string nume, adresa, preparate; int pret;
+		cout << "Nume client: "; cin >> nume;
+		cout << "Adresa client: "; cin >> adresa;
+		cout << "Lista preparate: "; cin >> preparate; if (preparate == "-") preparate = "";
+		cout << "Pret total: "; cin >> pret;
+		Mancare m(nume, adresa, preparate, pret);
+		s.validareMancare(m);
+		Comanda* c = new Mancare(m);
+		s.addComanda(c);
+	}
+	catch (ValidationException exc) {
+		cout << "Exceptie: " << exc.what() << endl;
+	}
 }
 
 void UI::addShopping()
 {
-	string nume, adresa, cumparaturi, magazin; int pret;
-	cout << "Nume client: "; cin >> nume;
-	cout << "Adresa client: "; cin >> adresa;
-	cout << "Lista cumparaturi: "; cin >> cumparaturi; if (cumparaturi == "-") cumparaturi = "";
-	cout << "Pret total: "; cin >> pret;
-	cout << "Nume magazin: "; cin >> magazin;
-	Shopping sho(nume, adresa, cumparaturi, pret, magazin);
-	s.addShopping(sho);
+	try {
+		string nume, adresa, cumparaturi, magazin; int pret;
+		cout << "Nume client: "; cin >> nume;
+		cout << "Adresa client: "; cin >> adresa;
+		cout << "Lista cumparaturi: "; cin >> cumparaturi; if (cumparaturi == "-") cumparaturi = "";
+		cout << "Pret total: "; cin >> pret;
+		cout << "Nume magazin: "; cin >> magazin;
+		Shopping sho(nume, adresa, cumparaturi, pret, magazin);
+		s.validareShopping(sho);
+		Comanda* c = new Shopping(sho);
+		s.addComanda(c);
+	}
+	catch (ValidationException exc) {
+		cout << "Exceptie: " << exc.what() << endl;
+	}
 }
 
 void UI::cautareDupaNume()
 {
 	string nume;
 	cout << "Dati numele clientului: "; cin >> nume;
-	map<int, Mancare> m = s.mancareDupaNumeClient(nume);
-	map<int, Mancare>::iterator itr;
+	map<int, Comanda*> m = s.comandaDupaNumeClient(nume);
+	map<int, Comanda*>::iterator itr;
+	cout << endl;
 	for (itr = m.begin(); itr != m.end(); ++itr) {
-		cout << itr->second;
-		cout << endl;
-	}
-	map<int, Shopping> sho = s.shoppingDupaNumeClient(nume);
-	map<int, Shopping>::iterator it;
-	for (it = sho.begin(); it != sho.end(); ++it) {
-		cout << it->second;
-		cout << endl;
+		cout << (*itr->second).toStringDelimiter('-') << endl;
 	}
 }
 
@@ -124,32 +121,28 @@ void UI::run()
 			cin >> option;
 			if (option == 1)
 			{
-				allMancare();
+				allComenzi();
 				continue;
 			}
-			if (option == 2)
-			{
-				allShopping();
-				continue;
-			}
-			if (option == 3) {
+			if (option == 2) {
 				cautareDupaNume();
 				continue;
 			}
-			if (option == 4) {
+			if (option == 3) {
 				addMancare();
 				continue;
 			}
-			if (option == 5) {
+			if (option == 4) {
 				addShopping();
 				continue;
 			}
-			if (option == 6) {
+			if (option == 5) {
 				logout();
 				k = false;
 			}
-			if (option == 7)
+			if (option == 6) {
 				k = false;
+			}
 		}
 	}
 	else

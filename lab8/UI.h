@@ -13,8 +13,7 @@ public:
 	UI(Service&);
 	int login();
 	void logout();
-	void allMancare();
-	void allShopping();
+	void allComenzi();
 	void addMancare();
 	void addShopping();
 	void cautareDupaNume();

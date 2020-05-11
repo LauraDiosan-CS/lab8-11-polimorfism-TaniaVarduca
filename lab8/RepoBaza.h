@@ -2,7 +2,6 @@
 #include <map>
 #include <algorithm>
 #include <string>
-//#include "Exc.h"
 using namespace std;
 
 template <class T> class Repo
@@ -14,13 +13,13 @@ public:
 	Repo();
 	Repo(const Repo& r);
 	~Repo();
-	void add(T& a);
+	void add(T a);
 	map<int, T> getAll();
-	void del(int pos);
-	//void updateComanda(T& a, int pos, char* numeClient, char* adresaClient, float pretTotal);
-	//void update(T&, T&);
+	void remove(T);
+	void update(T, T);
 	int size();
-	int find(T&);
+	int find(T);
+	T get(int);
 	virtual void loadFromFile();
 	virtual void saveToFile();
 };
@@ -40,7 +39,7 @@ template <class T> Repo<T>::~Repo() {
 }
 
 //adaugarea unui comenzi
-template <class T> void Repo<T>::add(T& a) {
+template <class T> void Repo<T>::add(T a) {
 	comenzi.insert(pair<int, T>(contor++, a));
 }
 
@@ -50,24 +49,21 @@ template <class T> map<int, T> Repo<T>::getAll() {
 }
 
 //stergerea unei comenzi
-template <class T> void Repo<T>::del(int pos)
+template <class T> void Repo<T>::remove(T a)
 {
+	int pos = find(a);
 	comenzi.erase(pos);
 }
 
-//template<class T> void Repo<T>::updateComanda(T& a, int pos, char* numeClient, char* adresaClient, float pretTotal)
-//{
-//	a.setNumeClient(numeClient);
-//	a.setAdresaClient(adresaClient);
-//	a.setPretTotal(pretTotal);
-//	comenzi.at(pos) = a;
-//}
-
-//template<class T>
-//inline void Repo<T>::update(T& vechi, T& nou)
-//{
-//	std::replace(comenzi.begin()->second, comenzi.end()->second, vechi, nou);
-//}
+template<class T>
+inline void Repo<T>::update(T vechi, T nou)
+{
+	for (auto itr = comenzi.begin(); itr != comenzi.end(); itr++) {
+		if (comenzi.find(itr->first)->second == vechi) {
+			comenzi[itr->first] = nou;
+		}
+	}
+}
 
 //dimensiune map
 template <class T> int Repo<T>::size() {
@@ -75,14 +71,28 @@ template <class T> int Repo<T>::size() {
 }
 
 template<class T>
-inline int Repo<T>::find(T& a)
+inline int Repo<T>::find(T a)
 {
+	int k = 0;
 	for (auto itr = comenzi.begin(); itr != comenzi.end(); ++itr) {
 		if (itr->second == a)
-			return itr->first;
+			return k;
+		k++;
 	}
 	return -1;
 }
+
+template<class T>
+T Repo<T>::get(int a)
+{
+	int k = 0;
+	for (auto itr = comenzi.begin(); itr != comenzi.end(); ++itr) {
+		if (k == a)
+			return itr->second;
+		k++;
+	}
+}
+
 
 template<class T>
 inline void Repo<T>::loadFromFile()

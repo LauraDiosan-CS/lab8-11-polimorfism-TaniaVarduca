@@ -156,30 +156,32 @@
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="ValidareDate.cpp" />
+    <ClCompile Include="ValidatorShopping.cpp" />
+    <ClCompile Include="ValidatorMancare.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Comanda.h" />
     <ClInclude Include="Exceptie.h" />
     <ClInclude Include="Mancare.h" />
     <ClInclude Include="RepoBaza.h" />
-    <ClInclude Include="RepoCostum.h" />
+    <ClInclude Include="RepoCustom.h" />
     <ClInclude Include="RepoCSV.h" />
+    <ClInclude Include="Serializer.h" />
+    <ClInclude Include="SerializerComanda.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="Shopping.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="ValidareDate.h" />
+    <ClInclude Include="ValidatorShopping.h" />
+    <ClInclude Include="ValidatorMancare.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="mancare.txt" />
-    <Text Include="shopping.txt" />
+    <Text Include="comenzi.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="mancare.csv" />
-    <None Include="shopping.csv" />
+    <None Include="comenzi.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

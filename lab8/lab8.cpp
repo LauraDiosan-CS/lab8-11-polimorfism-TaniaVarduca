@@ -1,8 +1,8 @@
 #include "RepoBaza.h"
-#include "Mancare.h"
+#include "Comanda.h"
 #include "Shopping.h"
 #include "RepoCSV.h"
-#include "RepoCostum.h"
+#include "RepoCustom.h"
 #include "tests.h"
 #include "Service.h"
 #include "UI.h"
@@ -14,28 +14,24 @@ int main()
     tests();
     cout << "Alegeti tipul de fisier: " << endl;
     cout << "1. CSV" << endl;
-    cout << "2. Costum" << endl;
+    cout << "2. Custom" << endl;
     cout << "Introduceti 1 sau 2: ";
     int opt; cin >> opt; cout << endl;
-    if (opt == 1) {
-        Repo<Mancare>* repoMancare = new RepoCSV<Mancare>("mancare.csv");
-        ((RepoCSV<Mancare>*)repoMancare)->loadFromFile();
-        Repo<Shopping>* repoShopping = new RepoCSV<Shopping>("shopping.csv");
-        ((RepoCSV<Shopping>*)repoShopping)->loadFromFile();
-        Repo<User>* repoUser = new Repo<User>();
-        Service s(repoMancare, repoShopping, repoUser);
-        UI ui(s);
-        ui.run();
-    }
-    if (opt == 2) {
-        Repo<Mancare>* repoMancare = new RepoCostum<Mancare>("mancare.txt");
-        ((RepoCostum<Mancare>*)repoMancare)->loadFromFile();
-        Repo<Shopping>* repoShopping = new RepoCostum<Shopping>("shopping.txt");
-        ((RepoCostum<Shopping>*)repoShopping)->loadFromFile();
-        Repo<User>* repoUser = new Repo<User>();
-        Service s(repoMancare, repoShopping, repoUser);
-        UI ui(s);
-        ui.run();
-    }
+	Repo<Comanda*>* repo = new Repo<Comanda*>;
+	SerializerComanda* s = new SerializerComanda;
+	if (opt == 1) {
+		repo = new RepoCSV<Comanda*>("comenzi.csv", s);
+		repo->loadFromFile();
+	}
+	else {
+		repo = new RepoCustom<Comanda*>("comenzi.txt", s);
+		repo->loadFromFile();
+	}
+
+	Repo<User>* repoU = new Repo<User>;
+	Service serv(repo, repoU);
+	UI ui(serv);
+	ui.run();
+    
     return 0;
 }
